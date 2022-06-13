@@ -14,26 +14,56 @@ int there_it_is(char *str, int find)
 	return 0;
 }
 
-char *get_next_line(int fd)
+char *current_line(int fd, char *str)
 {
-	char		*str;
+	int i;
 	char		*buffer;
-	char		*dest;
-	static int			i;
 
 	i = 1;
 	buffer = calloc(BUFFER_SIZE + 1, sizeof(char));
-	while(!there_it_is(str, '\n') && i != 0)
+	while(!there_it_is(buffer, '\n') && i != 0)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
+		buffer[i] = '\0';
 		str = ft_strjoin(str, buffer);
 	}
-	i = 0;
-	while(str[i] != '\n'))
-		++i;
-
-	dest = ft_substr(str, )
-
 	free(buffer);
-	return (str);
+	return str;
+}
+
+char *left_str(char *remainder)
+{
+	char *str;
+	str = ft_strdup(remainder);
+	return str;
+}
+
+char *get_next_line(int fd)
+{
+	static char		*str;
+	char		*remainder;
+	char		*dest;
+	int			i;
+	int			j;
+	size_t		str_size;
+
+	j = 0;
+	i = 0;
+	if(str == NULL)
+		str = ft_strdup("");
+	str = current_line(fd, str);
+	str_size = ft_strlen(str);
+	while(str[i] != '\n' && str[i] != '\0')
+		++i;
+	remainder = ft_substr(str, i + 1, str_size);
+	dest = calloc(i + 1, sizeof(char));
+	while(j <= i)
+	{
+		dest[j] = str[j];
+		++j;
+	}
+	free(str);
+	str = left_str(remainder);
+	free(remainder);
+	return (dest);
 }

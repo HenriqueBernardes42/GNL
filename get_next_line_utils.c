@@ -36,25 +36,6 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return (NULL);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	int			size1;
-	int			size2;
-	char		*ptr;
-
-	size1 = ft_strlen(s1);
-	size2 = ft_strlen(s2);
-	ptr = malloc((size1 + size2 + 1) * sizeof(char));
-	if (ptr != NULL )
-	{
-		ft_strlcat(ptr, s1, size1 + 1);
-		ft_strlcat(ptr, s2, size1 + size2 + 1);
-		return (ptr);
-	}
-	else
-		return (NULL);
-}
-
 size_t	ft_strlcat(char *dst, const char *src, size_t size)
 {
 	size_t	i;
@@ -74,6 +55,27 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 	return (i + ft_strlen(src));
 }
 
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	int			size1;
+	int			size2;
+	char		*ptr;
+
+	size1 = ft_strlen(s1);
+	size2 = ft_strlen(s2);
+	ptr = malloc((size1 + size2 + 1) * sizeof(char));
+	if (ptr != NULL )
+	{
+		ft_strlcat(ptr, s1, size1 + 1);
+		ft_strlcat(ptr, s2, size1 + size2 + 1);
+		return (ptr);
+	}
+	else
+		return (NULL);
+}
+
+
+
 char	*ft_strdup(const char *s)
 {
 	char	*dest;
@@ -90,4 +92,35 @@ char	*ft_strdup(const char *s)
 	}
 	dest[i] = '\0';
 	return (dest);
+}
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n)
+	{
+		*((char *)s + i) = c;
+		++i;
+	}
+	return (s);
+}
+
+char	*ft_strchr(char *s, int c)
+{
+	int	i;
+
+	i = 0;
+	if (!s)
+		return (0);
+	if (c == '\0')
+		return ((char *)&s[ft_strlen(s)]);
+	while (s[i] != '\0')
+	{
+		if (s[i] == (char) c)
+			return ((char *)&s[i]);
+		i++;
+	}
+	return (0);
 }
