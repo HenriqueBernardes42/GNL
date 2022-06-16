@@ -31,13 +31,6 @@ char *current_line(int fd, char *str)
 	return str;
 }
 
-char *left_str(char *remainder)
-{
-	char *str;
-	str = ft_strdup(remainder);
-	return str;
-}
-
 char *get_next_line(int fd)
 {
 	static char		*str;
@@ -55,15 +48,26 @@ char *get_next_line(int fd)
 	str_size = ft_strlen(str);
 	while(str[i] != '\n' && str[i] != '\0')
 		++i;
-	remainder = ft_substr(str, i + 1, str_size);
-	dest = calloc(i + 1, sizeof(char));
+	if((str_size - i) > 1)
+	{
+		remainder = malloc((str_size - i) * sizeof(char));
+		++i;
+		while((size_t) i < str_size)
+		{
+			remainder[j] = str[i];
+			++i;
+		}
+		remainder[j] = '\0';
+	}
+	else
+		remainder = ft_strdup("");
+	dest = calloc((i + 2) , sizeof(char));
 	while(j <= i)
 	{
 		dest[j] = str[j];
 		++j;
 	}
-	free(str);
-	str = left_str(remainder);
+	str = ft_strdup(remainder);
 	free(remainder);
 	return (dest);
 }
