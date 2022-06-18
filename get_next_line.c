@@ -1,43 +1,63 @@
 #include "get_next_line.h"
 
-int there_it_is(char *str, int find)
+int there_it_is(char *s, int c)
 {
-	int	i;
+	int		position;
 
-	i = 0;
-	while(str[i])
+	position = 0;
+	if (!s)
+		return (0);
+	while (s[position])
 	{
-		if(str[i] == find)
-			return 1;
-		++i;
+		if (s[position] == c)
+			return position;
+		++position;
 	}
-	return 0;
+	return (0);
 }
 
-char *current_line(int fd, char *str)
+char *new_str(char *str,int i,int j)
 {
-	int i;
-	char		*buffer;
+	char	*reminder;
 
-	i = 1;
-	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	while(!there_it_is(str, '\n') && i != 0)
+	while(str[i])
+		++i;
+	reminder = calloc((i - j + 1) , sizeof(char));
+	i = 0;
+	while(str[j])
+		reminder[i++] = str[j++];
+	free(str);
+	return reminder;
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*str;
+	char		*buffer;
+	char		*line;
+	int			i;
+	int			j;
+
+	i = -1;
+	buffer = calloc((BUFFER_SIZE + 1) , sizeof(char));
+	while(!there_it_is(buffer, '\n') && i != 0)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
 		buffer[i] = '\0';
 		str = ft_strjoin(str, buffer);
 	}
+	j = 0;
+	i = 0;
+	while(str[j] != '\n' && str[j] != '\0')
+		++j;
+	++j;
+	line = calloc((j + 1) , sizeof(char));
+	while(i < j)
+	{
+		line[i] = str[i];
+		++i;
+	}
+	str = new_str(str, i, j);
 	free(buffer);
-	return str;
-}
-
-char *get_next_line(int fd)
-{
-	char *str;
-
-	// if(str == NULL)
-	// 	str = ft_strdup("");
-	// printf("str = |%s|\n",str);
-	str = current_line(fd, str);
-	return str;
+	return line;
 }

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen(char *s)
 {
 	int	i;
 
@@ -11,7 +11,8 @@ size_t	ft_strlen(const char *s)
 }
 
 
-char	*ft_strjoin(char const *s1, char const *s2)
+
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char 	*new;
 	size_t	total_size;
@@ -20,9 +21,13 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	i = 0;
 	j = 0;
+	if(!s1)
+	{
+		s1 = malloc(1 * sizeof(char));
+		s1[0] = '\0';
+	}
 	total_size = ft_strlen(s1) + ft_strlen(s2);
-	// printf("total_size = %ld\n", total_size);
-	new = malloc((total_size + 1) * sizeof(char));
+	new = calloc((total_size + 1) , sizeof(char));
 	while(s1[i])
 	{
 		new[i] = s1[i];
@@ -33,24 +38,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		new[i + j] = s2[j];
 		++j;
 	}
-
+	free(s1); //<-libera o antigo str, que agora é new
 	return new;
-}
-
-char	*ft_strdup(const char *s)
-{
-	char	*dest;
-	int		i;
-	size_t	size;
-
-	i = 0;
-	size = ft_strlen(s);
-	dest = malloc((size + 1) * sizeof(char));
-	while (s[i])
-	{
-		dest[i] = s[i];
-		++i;
-	}
-	dest[i] = '\0';
-	return (dest);
 }
