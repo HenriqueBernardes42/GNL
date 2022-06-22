@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hbernard <hbernard@student.42sp.org.br>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/22 22:39:22 by hbernard          #+#    #+#             */
+/*   Updated: 2022/06/22 23:20:43 by hbernard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-int there_it_is(char *s, int c)
+int	there_it_is(char *s, int c)
 {
 	int		position;
 
@@ -10,54 +22,102 @@ int there_it_is(char *s, int c)
 	while (s[position])
 	{
 		if (s[position] == c)
-			return position;
+			return (position);
 		++position;
 	}
 	return (0);
 }
 
-char *new_str(char *str,int i,int j)
+char	*bild_line(char *str)
 {
+	int		i;
+	char	*new_str;
+
+	i = 0;
+	if (!str[i])
+		return (NULL);
+	while (str[i] && str[i] != '\n')
+		++i;
+	++i;
+	new_str = malloc((i + 1) * sizeof(char));
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (str[i] && str[i] != '\n')
+	{
+		new_str[i] = str[i];
+		i++;
+	}
+	if (str[i] == '\n')
+	{
+		new_str[i] = str[i];
+		i++;
+	}
+	new_str[i] = '\0';
+	return (new_str);
+}
+
+char	*new_reminder(char *str)
+{
+	int		i;
+	int		j;
 	char	*reminder;
 
-	while(str[i])
-		++i;
-	reminder = calloc((i - j + 1) , sizeof(char));
 	i = 0;
-	while(str[j])
-		reminder[i++] = str[j++];
+	while (str[i] && str[i] != '\n')
+		i++;
+	if (!str[i])
+	{
+		free(str);
+		return (NULL);
+	}
+	reminder = malloc((ft_strlen(str) - i + 1) * sizeof(char));
+	if (!reminder)
+		return (NULL);
+	i++;
+	j = 0;
+	while (str[i])
+		reminder[j++] = str[i++];
+	reminder[j] = '\0';
 	free(str);
-	return reminder;
+	return (reminder);
+}
+
+char	*ft_read(int fd, char *str)
+{
+	char	*buffer;
+	int		i;
+
+	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buffer)
+		return (NULL);
+	i = 1;
+	while (!there_it_is(str, '\n') && i != 0)
+	{
+		i = read(fd, buffer, BUFFER_SIZE);
+		if (i == -1)
+		{
+			free(buffer);
+			return (NULL);
+		}
+		buffer[i] = '\0';
+		str = ft_strjoin(str, buffer, 0, 0);
+	}
+	free(buffer);
+	return (str);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*str;
-	char		*buffer;
 	char		*line;
-	int			i;
-	int			j;
+	static char	*left_str;
 
-	i = -1;
-	buffer = calloc((BUFFER_SIZE + 1) , sizeof(char));
-	while(!there_it_is(buffer, '\n') && i != 0)
-	{
-		i = read(fd, buffer, BUFFER_SIZE);
-		buffer[i] = '\0';
-		str = ft_strjoin(str, buffer);
-	}
-	j = 0;
-	i = 0;
-	while(str[j] != '\n' && str[j] != '\0')
-		++j;
-	++j;
-	line = calloc((j + 1) , sizeof(char));
-	while(i < j)
-	{
-		line[i] = str[i];
-		++i;
-	}
-	str = new_str(str, i, j);
-	free(buffer);
-	return line;
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
+	left_str = ft_read(fd, left_str);
+	if (!left_str)
+		return (NULL);
+	line = bild_line(left_str);
+	left_str = new_reminder(left_str);
+	return (line);
 }

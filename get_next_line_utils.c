@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hbernard <hbernard@student.42sp.org.br>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/22 22:42:43 by hbernard          #+#    #+#             */
+/*   Updated: 2022/06/22 23:21:08 by hbernard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 
 size_t	ft_strlen(char *s)
@@ -10,34 +22,31 @@ size_t	ft_strlen(char *s)
 	return (i);
 }
 
-
-
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoin(char *str, char *buffer, size_t i, size_t j)
 {
-	char 	*new;
-	size_t	total_size;
-	int		i;
-	int		j;
+	char	*new_str;
 
-	i = 0;
-	j = 0;
-	if(!s1)
+	if (!str)
 	{
-		s1 = malloc(1 * sizeof(char));
-		s1[0] = '\0';
+		str = malloc(1 * sizeof(char));
+		str[0] = '\0';
 	}
-	total_size = ft_strlen(s1) + ft_strlen(s2);
-	new = calloc((total_size + 1) , sizeof(char));
-	while(s1[i])
+	if (!str || !buffer)
+		return (NULL);
+	new_str = malloc(sizeof(char) * ((ft_strlen(str) + ft_strlen(buffer)) + 1));
+	if (new_str == NULL)
+		return (NULL);
+	if (str)
 	{
-		new[i] = s1[i];
-		++i;
+		while (str[i] != '\0')
+		{
+			new_str[i] = str[i];
+			++i;
+		}
 	}
-	while(s2[j])
-	{
-		new[i + j] = s2[j];
-		++j;
-	}
-	free(s1); //<-libera o antigo str, que agora é new
-	return new;
+	while (buffer[j] != '\0')
+		new_str[i++] = buffer[j++];
+	new_str[ft_strlen(str) + ft_strlen(buffer)] = '\0';
+	free(str);
+	return (new_str);
 }
