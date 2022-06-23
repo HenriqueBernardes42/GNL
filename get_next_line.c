@@ -6,7 +6,7 @@
 /*   By: hbernard <hbernard@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 22:39:22 by hbernard          #+#    #+#             */
-/*   Updated: 2022/06/22 23:20:43 by hbernard         ###   ########.fr       */
+/*   Updated: 2022/06/23 06:23:42 by hbernard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	there_it_is(char *s, int c)
 	while (s[position])
 	{
 		if (s[position] == c)
-			return (position);
+			return (1);
 		++position;
 	}
 	return (0);
@@ -40,7 +40,7 @@ char	*bild_line(char *str)
 		++i;
 	++i;
 	new_str = malloc((i + 1) * sizeof(char));
-	if (!str)
+	if (!new_str)
 		return (NULL);
 	i = 0;
 	while (str[i] && str[i] != '\n')
@@ -101,7 +101,7 @@ char	*ft_read(int fd, char *str)
 			return (NULL);
 		}
 		buffer[i] = '\0';
-		str = ft_strjoin(str, buffer, 0, 0);
+		str = ft_strjoin(str, buffer);
 	}
 	free(buffer);
 	return (str);
@@ -110,14 +110,14 @@ char	*ft_read(int fd, char *str)
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*left_str;
+	static char	*str;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (0);
-	left_str = ft_read(fd, left_str);
-	if (!left_str)
+	str = ft_read(fd, str);
+	if (!str)
 		return (NULL);
-	line = bild_line(left_str);
-	left_str = new_reminder(left_str);
+	line = bild_line(str);
+	str = new_reminder(str);
 	return (line);
 }
